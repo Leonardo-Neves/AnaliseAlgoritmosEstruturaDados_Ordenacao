@@ -89,12 +89,12 @@ class HeapSort:
 
             return A
 
-# n = 20
-# itens = [random.randint(1, 100) for i in range(0, n)]
+n = 10
+itens = [random.randint(1, n) for i in range(0, n)]
 
-# print('itens', itens)
+print('itens', itens)
 
-# heap_short = HeapSort(itens, minimum=True)
-# itens_sorted = heap_short.sort()
+heap_short = HeapSort(itens, minimum=False)
+itens_sorted = heap_short.sort()
 
-# print('itens_sorted', itens_sorted)
+print('itens_sorted', itens_sorted)

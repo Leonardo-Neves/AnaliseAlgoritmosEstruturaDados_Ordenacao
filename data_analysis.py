@@ -4,15 +4,13 @@ import seaborn as sns
 import matplotlib.ticker as ticker
 
 df = pd.read_csv('sorting_execution_times_experiment.csv')
-# Convert Execution Time to microseconds
-df['Execution Time'] = df['Execution Time'] * 1000000
 
 # Box plot grouped by Algorithm and Length
 plt.figure(figsize=(12, 8))
 sns.boxplot(x='Length', y='Execution Time', hue='Algorithm', data=df)
 plt.title('Box Plot of Execution Time Grouped by Algorithm and Length')
 plt.xlabel('Length')
-plt.ylabel('Execution Time (µs)')
+plt.ylabel('Execution Time (s)')
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.legend(title='Algorithm')
 plt.tight_layout()
@@ -23,7 +21,7 @@ plt.figure(figsize=(12, 8))
 sns.boxplot(x='Dataset Type', y='Execution Time', hue='Algorithm', data=df)
 plt.title('Box Plot of Execution Time Grouped by Algorithm and Dataset Type')
 plt.xlabel('Dataset Type')
-plt.ylabel('Execution Time (µs)')
+plt.ylabel('Execution Time (s)')
 plt.grid(True, linestyle='--', alpha=0.7)
 plt.legend(title='Algorithm')
 plt.tight_layout()
@@ -61,7 +59,7 @@ for dataset_type, ax in zip(dataset_types, axs):
     
     ax.set_title(f'{dataset_type}')
     ax.set_xlabel('Length')
-    ax.set_ylabel('Execution Time (µs)') 
+    ax.set_ylabel('Execution Time (s)') 
     ax.set_xscale('log') 
     ax.set_xticks(x_values)
     
