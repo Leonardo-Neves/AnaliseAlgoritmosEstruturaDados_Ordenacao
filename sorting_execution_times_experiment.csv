@@ -105,3 +105,8 @@ Length,Dataset Type,Algorithm,Execution Time
 100000,OrderedInverse,HeapSort,0.18450570106506348
 100000,OrderedInverse,InsertionSort,326.9868471622467
 100000,OrderedInverse,MergeSort,349.26188039779663
+100000,OrderedInverse,QuickSort,405.95560240745544
+100000,OrderedInverse,SelectionSort,370.7382302284241
+100000,AlmostOrdered,BubbleSort,418.60454273223877
+100000,AlmostOrdered,HeapSort,0.24879741668701172
+100000,AlmostOrdered,InsertionSort,46.99878692626953
