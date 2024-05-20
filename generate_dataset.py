@@ -45,8 +45,8 @@ class GenerateDataset:
             random_lists.append(random_list)
         return random_lists
     
-# length_lists = [10, 100, 1000, 10000, 100000, 1000000]
-length_lists = [10, 100]
+length_lists = [10, 100, 1000, 10000, 100000, 1000000]
+# length_lists = [10, 100]
 
 generate_dataset = GenerateDataset(length_lists)
 
@@ -68,6 +68,8 @@ datasets.append({
     'name': 'Random',
     'dataset': generate_dataset.random()
 })
+
+print(datasets)
 
 algorithm_classes = [
     {   
