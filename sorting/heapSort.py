@@ -1,4 +1,7 @@
 import random
+import sys
+
+sys.setrecursionlimit(100001)
 
 class HeapSort:
     def __init__(self, array, minimum=False):

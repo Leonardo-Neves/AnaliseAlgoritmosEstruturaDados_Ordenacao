@@ -1,5 +1,8 @@
 import random
 import numpy as np
+import sys
+
+sys.setrecursionlimit(100001)
 
 class MergeSort:
 
