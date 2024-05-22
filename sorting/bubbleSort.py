@@ -1,4 +1,3 @@
-from numba import jit
 import random
 
 class BubbleSort:
@@ -6,7 +5,6 @@ class BubbleSort:
     def __init__(self, array):
         self.array = array
     
-    @jit(nopython=True, parallel=True)
     def sort(self):
         n = len(self.array)
         n_trocas = 0

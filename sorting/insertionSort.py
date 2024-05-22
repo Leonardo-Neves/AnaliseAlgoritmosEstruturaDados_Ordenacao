@@ -1,4 +1,3 @@
-from numba import jit
 import random
 
 class InsertionSort:
@@ -6,7 +5,6 @@ class InsertionSort:
     def __init__(self, array):
         self.array = array
 
-    @jit(nopython=True, parallel=True)
     def sort(self):
         for i in range(1, len(self.array)):
             aux = self.array[i]

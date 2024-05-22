@@ -1,7 +1,6 @@
 import random
 import numpy as np
 import sys
-from numba import jit
 
 sys.setrecursionlimit(100001)
 
@@ -11,7 +10,6 @@ class MergeSort:
         self.array = array
         self.recursive = recursive
 
-    @jit(nopython=True, parallel=True)
     def interleave(self, A, initial_index, middle_index, end_index):
 
         B = [0 for i in range(0, (end_index - initial_index) + 1)]
@@ -41,7 +39,6 @@ class MergeSort:
 
         return A
     
-    @jit(nopython=True, parallel=True)
     def sort(self):
 
         if self.recursive:

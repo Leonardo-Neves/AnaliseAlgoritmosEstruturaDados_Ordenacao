@@ -30,20 +30,18 @@ algorithms = [
 
 results_df = []
 
-def runAlgorithm(length, dataset_type, algorithm_name, sort_func):
-    
+def runAlgorithm(length, dataset_type, algorithm_name, sort_func, arr):
+
     global results_df
 
     arr_copy = arr.copy()
     start_time = time.time()
-    try:
-        sort_func(arr_copy).sort()
-    except Exception as e:
-        pass
+
+    result = sort_func(arr_copy).sort()
 
     execution_time = time.time() - start_time
 
-    results_df.append({'Length': length, 'Dataset Type': dataset_type, 'Algorithm': algorithm_name, 'Execution Time': execution_time})
+    results_df.append({'Length': length, 'Dataset Type': dataset_type, 'Algorithm': algorithm_name, 'Execution Time': execution_time, "result": result})
 
 for length in length_lists:
     for dataset_type in ['Ordered', 'OrderedInverse', 'AlmostOrdered', 'Random']:
@@ -54,12 +52,12 @@ for length in length_lists:
         workers = min(MAX_WORKERS, len(algorithms))
 
         with futures.ThreadPoolExecutor(workers) as executor:
-            future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, sort_func): dataset_type for algorithm_name, sort_func in algorithms}    
+            future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, sort_func, arr): dataset_type for algorithm_name, sort_func in algorithms}    
             for future in futures.as_completed(future_to_get_bv):
                 future.result()
 
                     
-results_df = pd.DataFrame(results_df, columns=['Length', 'Dataset Type', 'Algorithm', 'Execution Time'])
+results_df = pd.DataFrame(results_df, columns=['Length', 'Dataset Type', 'Algorithm', 'Execution Time', "result"])
 
 results_df.to_csv(OUTPUT_FILE, index=False, sep=";")        
 
