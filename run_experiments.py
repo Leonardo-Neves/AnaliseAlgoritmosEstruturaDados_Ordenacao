@@ -24,9 +24,9 @@ algorithms = [
     ('BubbleSort', BubbleSort),
     ('HeapSort', HeapSort),
     ('InsertionSort', InsertionSort),
-    ('MergeSort', MergeSort),
-    ('QuickSort', QuickSort),
-    ('SelectionSort', SelectionSort)
+    # ('QuickSort', QuickSort),
+    ('SelectionSort', SelectionSort),
+    # ('MergeSort', MergeSort),
 ]
 
 
@@ -46,6 +46,7 @@ for length in tqdm(length_lists, desc="Dataset Lengths"):
                               (results_df['Dataset Type'] == dataset_type) & 
                               (results_df['Algorithm'] == algorithm_name)].empty:
                 continue
+            print(algorithm_name, dataset_type, length)
             
             arr_copy = arr.copy()
             start_time = time.time()
