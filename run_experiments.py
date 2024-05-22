@@ -24,9 +24,9 @@ algorithms = [
     ('BubbleSort', BubbleSort),
     ('HeapSort', HeapSort),
     ('InsertionSort', InsertionSort),
-    # ('QuickSort', QuickSort),
+    ('QuickSort', QuickSort),
     ('SelectionSort', SelectionSort),
-    # ('MergeSort', MergeSort),
+    ('MergeSort', MergeSort),
 ]
 
 
