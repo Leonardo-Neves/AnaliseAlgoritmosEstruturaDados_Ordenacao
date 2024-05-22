@@ -1,10 +1,12 @@
 import random
+from numba import jit
 
 class SelectionSort:
 
     def __init__(self, array):
         self.array = array
 
+    @jit(nopython=True, parallel=True)
     def sort(self):
 
         A = self.array

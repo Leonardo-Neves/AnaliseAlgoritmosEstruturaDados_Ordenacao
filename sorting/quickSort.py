@@ -1,4 +1,4 @@
-
+from numba import jit
 import random
 import sys
 
@@ -8,6 +8,7 @@ class QuickSort:
     def __init__(self, array):
         self.array = array
 
+    @jit(nopython=True, parallel=True)
     def sort(self):
         n = len(self.array)
         self.quicksort_ordena(0, n - 1)
@@ -23,6 +24,7 @@ class QuickSort:
     #         if (q+1) < r:
     #             self.quicksort_ordena(q+1, r)
     
+    @jit(nopython=True, parallel=True)
     def quicksort_ordena(self, p, r):
         while p < r:
             q, t = self.quicksort_particao_ternaria(p, r)
@@ -33,7 +35,7 @@ class QuickSort:
                 self.quicksort_ordena(t + 1, r)
                 r = q - 1
                 
-    
+    @jit(nopython=True, parallel=True)
     def particiona(self, p, r):
         pivot = self.array[r]
         i = p - 1
@@ -50,6 +52,7 @@ class QuickSort:
     
         return i+1
     
+    @jit(nopython=True, parallel=True)
     def quicksort_particao_ternaria(self, p, r):
         x = self.array[r]
         i = p - 1
@@ -78,8 +81,6 @@ class QuickSort:
         t = i
         
         return q, t
-                
-        
             
 if __name__ == "__main__":
     n = 100000

@@ -1,5 +1,6 @@
 import random
 import sys
+from numba import jit
 
 sys.setrecursionlimit(100001)
 
@@ -8,6 +9,7 @@ class HeapSort:
         self.A = array
         self.minimum = minimum
 
+    @jit(parallel=True)
     def reDoMinimum(self, A, n, i):
         smallest = int(i)
         l = int(2 * i + 1)
@@ -25,6 +27,7 @@ class HeapSort:
 
         return A
 
+    @jit(parallel=True)
     def buildMinimum(self, A, n):
 
         i = n / 2 - 1
@@ -34,6 +37,7 @@ class HeapSort:
 
         return A
 
+    @jit(parallel=True)
     def reDoMaximum(self, A, esq, dir):
         i = esq
         j = i * 2 + 1
@@ -52,6 +56,7 @@ class HeapSort:
 
         return A
 
+    @jit(parallel=True)
     def buildMaximum(self, A, n):
         esq = int((n / 2) - 1)
         
@@ -61,6 +66,7 @@ class HeapSort:
 
         return A
 
+    @jit(parallel=True)
     def sort(self):
 
         if self.minimum:
@@ -89,12 +95,12 @@ class HeapSort:
 
             return A
 
-n = 10
-itens = [random.randint(1, n) for i in range(0, n)]
+# n = 10
+# itens = [random.randint(1, n) for i in range(0, n)]
 
-print('itens', itens)
+# print('itens', itens)
 
-heap_short = HeapSort(itens, minimum=False)
-itens_sorted = heap_short.sort()
+# heap_short = HeapSort(itens, minimum=False)
+# itens_sorted = heap_short.sort()
 
-print('itens_sorted', itens_sorted)
+# print('itens_sorted', itens_sorted)
