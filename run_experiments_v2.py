@@ -1,16 +1,18 @@
 import time
 import pandas as pd
 import concurrent.futures as futures
+import warnings
 
 from DatasetGenerator import DatasetGenerator
-from sorting import (
-    QuickSort,
-    BubbleSort,
-    InsertionSort,
-    SelectionSort,
-    HeapSort,
-    MergeSort
-)
+
+from sorting.bubbleSort import bubbleSort
+from sorting.heapSort import heapSort
+from sorting.insertionSort import insertionSort
+from sorting.mergeSort import mergeSort
+from sorting.quickSort import quickSort
+from sorting.selectionSort import selectionSort
+
+warnings.filterwarnings(action='ignore')
 
 OUTPUT_FILE = 'sorting_execution_times_experiment.csv'
 
@@ -20,24 +22,24 @@ generate_dataset = DatasetGenerator(length_lists, save_dir='datasets')
 
 # List of algorithms
 algorithms = [
-    ('BubbleSort', BubbleSort),
-    ('HeapSort', HeapSort),
-    ('InsertionSort', InsertionSort),
-    ('QuickSort', QuickSort),
-    ('SelectionSort', SelectionSort),
-    ('MergeSort', MergeSort),
+    'bubbleSort',
+    'heapSort',
+    'insertionSort',
+    'mergeSort',
+    'quickSort',
+    'selectionSort'
 ]
 
 results_df = []
 
-def runAlgorithm(length, dataset_type, algorithm_name, sort_func, arr):
+def runAlgorithm(length, dataset_type, algorithm_name, arr):
 
     global results_df
 
     arr_copy = arr.copy()
     start_time = time.time()
 
-    result = sort_func(arr_copy).sort()
+    result = globals()[algorithm_name](arr_copy)
 
     execution_time = time.time() - start_time
 
@@ -52,7 +54,7 @@ for length in length_lists:
         workers = min(MAX_WORKERS, len(algorithms))
 
         with futures.ThreadPoolExecutor(workers) as executor:
-            future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, sort_func, arr): dataset_type for algorithm_name, sort_func in algorithms}    
+            future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, arr): dataset_type for algorithm_name in algorithms}    
             for future in futures.as_completed(future_to_get_bv):
                 future.result()
 

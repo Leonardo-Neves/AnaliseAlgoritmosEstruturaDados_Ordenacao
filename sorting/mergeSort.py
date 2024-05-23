@@ -1,6 +1,7 @@
 import random
 import numpy as np
 import sys
+from numba import njit
 
 sys.setrecursionlimit(100001)
 
@@ -87,12 +88,82 @@ class MergeSort:
 
             return A
         
-# n = 20
-# itens = [random.randint(1, 100) for i in range(0, n)]
+@njit(parallel=True)
+def interleave(A, initial_index, middle_index, end_index):
 
-# print('itens', itens)
+    B = [0 for i in range(0, (end_index - initial_index) + 1)]
 
-# merge_sort = MergeSort(itens, recursive=True)
-# itens_sorted = merge_sort.sort()
+    i = initial_index
+    while i <= middle_index:
+        B[i - initial_index] = A[i]
+        i = i + 1
 
-# print('itens_sorted', itens_sorted)
+    j = middle_index + 1
+    while j <= end_index:
+        B[end_index + middle_index + 1 - j - initial_index] = A[j]
+        j = j + 1
+
+    i = initial_index
+    j = end_index
+    k = initial_index
+    while k <= end_index:
+        if B[i - initial_index] <= B[j - initial_index]:
+            A[k] = B[i - initial_index]
+            i = i + 1
+        else:
+            A[k] = B[j - initial_index]
+            j = j - 1
+        
+        k = k + 1
+
+    return A
+
+@njit(parallel=True)
+def mergeSort(array, recursive=False):
+
+    if recursive:
+        
+        i, aux, n = 0, 0, len(array)
+
+        A = array
+
+        while i < n:
+
+            min = i
+            j = i + 1 
+            while j < n:    
+                if A[j] < A[min]:
+                    min = j
+
+                j = j + 1   
+
+            aux = A[min]
+            A[min] = A[i]
+            A[i] = aux
+
+            i = i + 1
+
+        return A
+
+    elif not recursive:
+
+        A = array
+
+        initial_index, middle_index, end_index = 0, 0, 0
+
+        n = len(array)
+
+        i = 1
+        while i < n:
+            initial_index = 0
+            while (initial_index + i) < n:
+                end_index = initial_index + (2 * i) - 1
+                if end_index >= n:
+                    end_index = n - 1
+                middle_index = initial_index + i - 1
+                A = interleave(A, initial_index, middle_index, end_index)
+                initial_index = initial_index + (2 * i)
+            i = 2 * i
+
+        return A
+        

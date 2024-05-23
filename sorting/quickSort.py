@@ -1,5 +1,6 @@
 import random
 import sys
+from numba import njit
 
 sys.setrecursionlimit(100001)
 class QuickSort:
@@ -77,14 +78,49 @@ class QuickSort:
         
         return q, t
             
-if __name__ == "__main__":
-    n = 100000
-    # itens = [random.randint(1, n) for i in range(0, n)]
-    itens = [i for i in range(1, n+1)]
+@njit(parallel=True)
+def quickSort(array):
+    n = len(array)
+    quicksort_ordena(array, 0, n - 1)
+    return array
 
-    # print('itens', itens)
-
-    sort_algorithm = QuickSort(itens)
-    itens_sorted = sort_algorithm.sort()
-
-    print('itens_sorted', itens_sorted)
+@njit(parallel=True)
+def quicksort_ordena(array, p, r):
+    while p < r:
+        array, q, t = quicksort_particao_ternaria(array, p, r)
+        if (q - p < r - t):
+            quicksort_ordena(array, p, q - 1)
+            p = t + 1 
+        else:
+            quicksort_ordena(array, t + 1, r)
+            r = q - 1
+            
+@njit(parallel=True)
+def quicksort_particao_ternaria(array, p, r):
+    x = array[r]
+    i = p - 1
+    k = r
+    j = p
+    
+    while(j <= k - 1):
+        if array[j] < x:
+            i += 1
+            aux = array[i]
+            array[i] = array[j]
+            array[j] = aux
+        elif array[j] == x:
+            k -= 1
+            aux = array[k]
+            array[k] = array[j]
+            array[j] = aux
+            j -= 1
+        j += 1
+    q = i + 1
+    for j in range(k, r + 1):
+        i += 1
+        aux = array[i]
+        array[i] = array[j]
+        array[j] = aux
+    t = i
+    
+    return array, q, t

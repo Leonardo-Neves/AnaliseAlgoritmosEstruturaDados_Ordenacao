@@ -1,4 +1,25 @@
 import random
+from numba import njit
+
+@njit(parallel=True)
+def bubbleSort(array):
+    n = len(array)
+    n_trocas = 0
+    
+    for i in range(0, n-1):
+        j = 1
+        while(j < n - i):
+            if (array[j] < array[j-1]):
+                aux = array[j]
+                array[j] = array[j-1]
+                array[j-1] = aux
+                n_trocas += 1
+            j += 1 
+        
+        if n_trocas == 0:
+            break
+    
+    return array
 
 class BubbleSort:
 
@@ -24,13 +45,3 @@ class BubbleSort:
         
         return self.array
             
-if __name__ == "__main__":
-    n = 20
-    itens = [random.randint(1, 100) for i in range(0, n)]
-
-    print('itens', itens)
-
-    sort_algorithm = BubbleSort(itens)
-    itens_sorted = sort_algorithm.sort()
-
-    print('itens_sorted', itens_sorted)

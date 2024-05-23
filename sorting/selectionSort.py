@@ -1,5 +1,5 @@
 import random
-from numba import jit
+from numba import njit
 
 class SelectionSort:
 
@@ -31,12 +31,29 @@ class SelectionSort:
             i = i + 1
         return A
 
-# n = 20
-# itens = [random.randint(1, 100) for i in range(0, n)]
+@njit(parallel=True)
+def selectionSort(array):
 
-# print('itens', itens)
+    A = array
 
-# selection_sort = SelectionSort(itens)
-# itens_sorted = selection_sort.sort()
+    i, aux, n = 0, 0, len(array)
 
-# print('itens_sorted', itens_sorted)
+    while i < (n - 1):
+
+        j, min = i + 1, i
+
+        while j < n:
+
+            if A[j] < A[min]:
+                min = j
+
+            j = j + 1
+        
+        if i != min:
+            aux = A[min]
+            A[min] = A[i]
+            A[i] = aux
+
+        i = i + 1
+    return A
+
