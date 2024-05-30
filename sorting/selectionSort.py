@@ -38,19 +38,25 @@ def selectionSort(array):
     
     aux, n = 0, len(array)
 
+    counter_comparisons = 0
+    counter_moviments = 0
+
     for i in range(0, (n - 1)):
 
         min = i
         
         for j in range(i + 1, n):
 
+            counter_comparisons += 1
             if A[j] < A[min]:
                 min = j
+                counter_moviments += 1
         
+        counter_comparisons += 1
         if i != min:
             aux = A[min]
             A[min] = A[i]
             A[i] = aux
+            counter_moviments += 3
 
-    return A
-
+    return A, counter_comparisons, counter_moviments

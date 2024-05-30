@@ -29,27 +29,36 @@ class DatasetGenerator:
             return None
 
     def generate_ordered(self):
+        result = []
         for length in self.length_lists:
             ordered_list = list(range(1, length + 1))
-            self._save_dataset('Ordered', length, ordered_list)
+            result.append(ordered_list)
+        return result
     
     def generate_ordered_inverse(self):
+        result = []
         for length in self.length_lists:
             ordered_inverse_list = list(range(length, 0, -1))
-            self._save_dataset('OrderedInverse', length, ordered_inverse_list)
+            result.append(ordered_inverse_list)
+        
+        return result
     
     def generate_almost_ordered(self):
+        result = []
         for length in self.length_lists:
             half = list(range(1, int(np.floor(length / 2)) + 1))
             remaining = list(range(int(np.floor(length / 2)) + 1, length + 1))
             random.shuffle(remaining)
             almost_ordered_list = half + remaining
-            self._save_dataset('AlmostOrdered', length, almost_ordered_list)
+            result.append(almost_ordered_list)
+        return result
     
     def generate_random(self):
+        result = []
         for length in self.length_lists:
             random_list = random.sample(range(1, length * 2 + 1), length)
-            self._save_dataset('Random', length, random_list)
+            result.append(random_list)
+        return result
     
     def generate_all(self):
         self.generate_ordered()

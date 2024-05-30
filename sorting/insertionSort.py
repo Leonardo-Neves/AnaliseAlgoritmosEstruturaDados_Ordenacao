@@ -21,13 +21,31 @@ class InsertionSort:
 
 @njit(parallel=True)
 def insertionSort(array):
+
+    counter_comparisons, counter_moviments = 0, 0
+
     for i in range(1, len(array)):
         aux = array[i]
         j = i - 1
+        counter_moviments += 2
         
-        while((j >= 0) and (aux < array[j])):
-            array[j+1] = array[j]
-            j -= 1
-        array[j+1] = aux
+        for k in range(j, -1, -1):
+            if aux < array[k]:
+                counter_comparisons += 1
+
+                array[k+1] = array[k]
+                counter_moviments += 1
+            else:
+                counter_comparisons += 1
+
+                k += 1
+                counter_moviments += 1
+                break
+        else:
+            k = 0
+            counter_moviments += 1
+        
+        array[k] = aux
+        counter_moviments += 1
     
-    return array
+    return array, counter_comparisons, counter_moviments

@@ -89,81 +89,92 @@ class MergeSort:
             return A
         
 @njit(parallel=True)
-def interleave(A, initial_index, middle_index, end_index):
+def interleave(A, initial_index, middle_index, end_index, counter_comparisons, counter_moviments):
 
+    counter_moviments += 1
     B = [0 for i in range(0, (end_index - initial_index) + 1)]
 
-    i = initial_index
-    while i <= middle_index:
+    for i in range(initial_index, middle_index + 1):
+        counter_moviments += 1
         B[i - initial_index] = A[i]
-        i = i + 1
 
-    j = middle_index + 1
-    while j <= end_index:
+    for j in range(middle_index + 1, end_index + 1):
+        counter_moviments += 1
         B[end_index + middle_index + 1 - j - initial_index] = A[j]
-        j = j + 1
 
     i = initial_index
     j = end_index
-    k = initial_index
-    while k <= end_index:
-        if B[i - initial_index] <= B[j - initial_index]:
-            A[k] = B[i - initial_index]
-            i = i + 1
-        else:
-            A[k] = B[j - initial_index]
-            j = j - 1
-        
-        k = k + 1
+    counter_moviments += 2
 
-    return A
+    for k in range(initial_index, end_index + 1):
+        if B[i - initial_index] <= B[j - initial_index]:
+            counter_comparisons += 1
+
+            A[k] = B[i - initial_index]
+            i += 1
+            counter_moviments += 2
+        else:
+            counter_comparisons += 2
+
+            A[k] = B[j - initial_index]
+            j -= 1
+            counter_moviments += 2
+
+    return A, counter_comparisons, counter_moviments
 
 @njit(parallel=True)
 def mergeSort(array, recursive=False):
 
+    counter_comparisons, counter_moviments = 0, 0
+
     if recursive:
         
-        i, aux, n = 0, 0, len(array)
-
         A = array
 
-        while i < n:
+        n = len(A)
+        counter_moviments += 1
 
-            min = i
-            j = i + 1 
-            while j < n:    
-                if A[j] < A[min]:
-                    min = j
+        for i in range(n):
 
-                j = j + 1   
+            min_index = i
+            counter_moviments += 1
 
-            aux = A[min]
-            A[min] = A[i]
-            A[i] = aux
+            for j in range(i + 1, n):    
+                counter_comparisons += 1
+                if A[j] < A[min_index]:
 
-            i = i + 1
+                    min_index = j
+                    counter_moviments += 1
 
-        return A
+            A[i], A[min_index] = A[min_index], A[i]
+            counter_moviments += 2
 
-    elif not recursive:
+        return A, counter_comparisons, counter_moviments
+
+    else:
 
         A = array
-
-        initial_index, middle_index, end_index = 0, 0, 0
 
         n = len(array)
-
         i = 1
-        while i < n:
-            initial_index = 0
-            while (initial_index + i) < n:
-                end_index = initial_index + (2 * i) - 1
-                if end_index >= n:
-                    end_index = n - 1
-                middle_index = initial_index + i - 1
-                A = interleave(A, initial_index, middle_index, end_index)
-                initial_index = initial_index + (2 * i)
-            i = 2 * i
+        counter_moviments += 2
 
-        return A
+        while i < n:
+            counter_comparisons += 1
+
+            for initial_index in range(0, n, 2 * i):
+
+                middle_index = initial_index + i - 1
+                end_index = min(initial_index + (2 * i) - 1, n - 1)
+                counter_moviments += 2
+
+                counter_comparisons += 1
+                if middle_index < end_index:
+                    A, counter_comparisons, counter_moviments = interleave(A, initial_index, middle_index, end_index, counter_comparisons, counter_moviments)
+                    counter_moviments += 1
+
+            i *= 2
+            counter_moviments += 1
+
+        return A, counter_comparisons, counter_moviments
         

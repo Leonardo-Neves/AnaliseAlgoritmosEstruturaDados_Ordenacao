@@ -33,21 +33,20 @@ algorithms = [
 
 results_df = []
 
-def runAlgorithm(length, dataset_type, algorithm_name, arr):
+def runAlgorithm(length, dataset_type, algorithm_name, arr, run_time_index):
 
     global results_df
 
     arr_copy = arr.copy()
     start_time = time.process_time()
 
-    result = globals()[algorithm_name](arr_copy)
+    result, counter_comparisons, counter_moviments = globals()[algorithm_name](arr_copy)
 
     execution_time = time.process_time() - start_time
 
-    results_df.append({'Length': length, 'Dataset Type': dataset_type, 'Algorithm': algorithm_name, 'Execution Time': execution_time})
+    results_df.append({ 'Interation': run_time_index + 1, 'Length': length, 'Dataset Type': dataset_type, 'Algorithm': algorithm_name, 'Execution Time': execution_time, 'Counter Comparisons': counter_comparisons, 'Counter Moviments': counter_moviments})
 
 for i in range(0, RUN_TIMES):
-
     for length in length_lists:
         for dataset_type in ['Ordered', 'OrderedInverse', 'AlmostOrdered', 'Random']:
             arr = generate_dataset.get_dataset(dataset_type, length)
@@ -57,12 +56,12 @@ for i in range(0, RUN_TIMES):
             workers = min(MAX_WORKERS, len(algorithms))
 
             with futures.ThreadPoolExecutor(workers) as executor:
-                future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, arr): dataset_type for algorithm_name in algorithms}    
+                future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, arr, i): dataset_type for algorithm_name in algorithms}    
                 for future in futures.as_completed(future_to_get_bv):
                     future.result()
 
                     
-results_df = pd.DataFrame(results_df, columns=['Length', 'Dataset Type', 'Algorithm', 'Execution Time'])
+results_df = pd.DataFrame(results_df, columns=['Interation', 'Length', 'Dataset Type', 'Algorithm', 'Execution Time', 'Counter Comparisons', 'Counter Moviments'])
 
 results_df.to_csv(OUTPUT_FILE, index=False, sep=";")        
 
