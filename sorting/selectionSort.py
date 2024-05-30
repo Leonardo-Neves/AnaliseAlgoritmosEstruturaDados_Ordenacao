@@ -35,7 +35,7 @@ class SelectionSort:
 def selectionSort(array):
 
     A = array
-
+    print(1)
     i, aux, n = 0, 0, len(array)
 
     while i < (n - 1):
