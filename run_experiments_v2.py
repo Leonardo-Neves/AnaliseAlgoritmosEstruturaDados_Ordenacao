@@ -15,6 +15,7 @@ from sorting.selectionSort import selectionSort
 warnings.filterwarnings(action='ignore')
 
 OUTPUT_FILE = 'sorting_execution_times_experiment.csv'
+RUN_TIMES = 1
 
 # Initialize the dataset generator with the known lengths and the folder to load the datasets
 length_lists = [10, 100, 1000, 10000, 100000, 1000000]
@@ -37,29 +38,31 @@ def runAlgorithm(length, dataset_type, algorithm_name, arr):
     global results_df
 
     arr_copy = arr.copy()
-    start_time = time.time()
+    start_time = time.process_time()
 
     result = globals()[algorithm_name](arr_copy)
 
-    execution_time = time.time() - start_time
+    execution_time = time.process_time() - start_time
 
-    results_df.append({'Length': length, 'Dataset Type': dataset_type, 'Algorithm': algorithm_name, 'Execution Time': execution_time, "result": result})
+    results_df.append({'Length': length, 'Dataset Type': dataset_type, 'Algorithm': algorithm_name, 'Execution Time': execution_time})
 
-for length in length_lists:
-    for dataset_type in ['Ordered', 'OrderedInverse', 'AlmostOrdered', 'Random']:
-        arr = generate_dataset.get_dataset(dataset_type, length)
-        
-        MAX_WORKERS = 1000
+for i in range(0, RUN_TIMES):
 
-        workers = min(MAX_WORKERS, len(algorithms))
+    for length in length_lists:
+        for dataset_type in ['Ordered', 'OrderedInverse', 'AlmostOrdered', 'Random']:
+            arr = generate_dataset.get_dataset(dataset_type, length)
+            
+            MAX_WORKERS = 1000
 
-        with futures.ThreadPoolExecutor(workers) as executor:
-            future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, arr): dataset_type for algorithm_name in algorithms}    
-            for future in futures.as_completed(future_to_get_bv):
-                future.result()
+            workers = min(MAX_WORKERS, len(algorithms))
+
+            with futures.ThreadPoolExecutor(workers) as executor:
+                future_to_get_bv = {executor.submit(runAlgorithm, length, dataset_type, algorithm_name, arr): dataset_type for algorithm_name in algorithms}    
+                for future in futures.as_completed(future_to_get_bv):
+                    future.result()
 
                     
-results_df = pd.DataFrame(results_df, columns=['Length', 'Dataset Type', 'Algorithm', 'Execution Time', "result"])
+results_df = pd.DataFrame(results_df, columns=['Length', 'Dataset Type', 'Algorithm', 'Execution Time'])
 
 results_df.to_csv(OUTPUT_FILE, index=False, sep=";")        
 
