@@ -11,11 +11,12 @@ from sorting.insertionSort import insertionSort
 from sorting.mergeSort import mergeSort
 from sorting.quickSort import quickSort
 from sorting.selectionSort import selectionSort
+from sorting.splaySortSemClasse import splaySort
 
 warnings.filterwarnings(action='ignore')
 
 OUTPUT_FILE = 'sorting_execution_times_experiment.csv'
-RUN_TIMES = 1
+RUN_TIMES = 10
 
 # Initialize the dataset generator with the known lengths and the folder to load the datasets
 length_lists = [10, 100, 1000, 10000, 100000, 1000000]
@@ -28,7 +29,8 @@ algorithms = [
     'insertionSort',
     'mergeSort',
     'quickSort',
-    'selectionSort'
+    'selectionSort',
+    'splaySort'
 ]
 
 results_df = []

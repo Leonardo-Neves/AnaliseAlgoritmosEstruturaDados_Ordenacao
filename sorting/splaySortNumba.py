@@ -1,24 +1,27 @@
-from numba import njit
+from numba import jit
+import warnings
 
-@njit(parallel=True)
+warnings.filterwarnings(action='ignore')
+
+@jit
 def criar_no(chave):
     return [chave, None, None]  # [chave, filho esquerdo, filho direito]
 
-@njit(parallel=True)
+@jit
 def rotacionar_dir(x):
     y = x[1]
     x[1] = y[2]
     y[2] = x
     return y
 
-@njit(parallel=True)
+@jit
 def rotacionar_esq(x):
     y = x[2]
     x[2] = y[1]
     y[1] = x
     return y
 
-@njit(parallel=True)
+@jit
 def splay(raiz, chave):
     if raiz is None or raiz[0] == chave:
         return raiz
@@ -37,7 +40,11 @@ def splay(raiz, chave):
             if raiz[1][2] is not None:
                 raiz[1] = rotacionar_esq(raiz[1])
 
-        return rotacionar_dir(raiz) if raiz[1] is not None else raiz
+        if raiz[1] is not None:
+            return rotacionar_dir(raiz)
+        else:
+            return raiz
+        # return rotacionar_dir(raiz) if raiz[1] is not None else raiz
     else:
         if raiz[2] is None:
             return raiz
@@ -52,9 +59,14 @@ def splay(raiz, chave):
                 raiz[2][2] = splay(raiz[2][2], chave)
             raiz = rotacionar_esq(raiz)
 
-        return rotacionar_esq(raiz) if raiz[2] is not None else raiz
+        if raiz[2] is not None:
+            return rotacionar_esq(raiz)
+        else:
+            return raiz
 
-@njit(parallel=True)
+        # return rotacionar_esq(raiz) if raiz[2] is not None else raiz
+
+@jit
 def insere(raiz, chave):
     if raiz is None:
         return criar_no(chave)
@@ -77,7 +89,7 @@ def insere(raiz, chave):
 
     return novo_no
 
-@njit(parallel=True)
+@jit
 def deleta(raiz, chave):
     if raiz is None:
         return None
@@ -96,7 +108,7 @@ def deleta(raiz, chave):
 
     return raiz
 
-@njit(parallel=True)
+@jit
 def minimo(raiz):
     if raiz is None:
         return None
@@ -106,7 +118,7 @@ def minimo(raiz):
         no = no[1]
     return no[0]
 
-@njit(parallel=True)
+@jit
 def extrai_minimo(raiz):
     if raiz is None:
         return None, None
@@ -115,7 +127,7 @@ def extrai_minimo(raiz):
     raiz = deleta(raiz, min_chave)
     return min_chave, raiz
 
-@njit(parallel=True)
+@jit
 def splay_sort(A):
     raiz = None
     for x in A:
