@@ -81,46 +81,78 @@ class QuickSort:
 @njit(parallel=True)
 def quickSort(array):
     n = len(array)
-    quicksort_ordena(array, 0, n - 1)
-    return array
+
+    counter_comparisons, counter_moviments = quicksort_ordena(array, 0, n - 1, 0, 0)
+    return array, counter_comparisons, counter_moviments
 
 @njit(parallel=True)
-def quicksort_ordena(array, p, r):
+def quicksort_ordena(array, p, r, counter_comparisons, counter_moviments):
     while p < r:
-        array, q, t = quicksort_particao_ternaria(array, p, r)
+        counter_comparisons += 1
+
+        counter_moviments += 3
+        array, q, t, counter_comparisons, counter_moviments = quicksort_particao_ternaria(array, p, r, counter_comparisons, counter_moviments)
+
+        counter_comparisons += 1
         if (q - p < r - t):
-            quicksort_ordena(array, p, q - 1)
+            counter_comparisons, counter_moviments = quicksort_ordena(array, p, q - 1, counter_comparisons, counter_moviments)
+
+            counter_moviments += 1
             p = t + 1 
         else:
-            quicksort_ordena(array, t + 1, r)
+            counter_comparisons, counter_moviments = quicksort_ordena(array, t + 1, r, counter_comparisons, counter_moviments)
+
+            counter_moviments += 1
             r = q - 1
+
+    return counter_comparisons, counter_moviments
             
 @njit(parallel=True)
-def quicksort_particao_ternaria(array, p, r):
+def quicksort_particao_ternaria(array, p, r, counter_comparisons, counter_moviments):
+
     x = array[r]
     i = p - 1
     k = r
-    j = p
+
+    counter_moviments += 3
     
-    while(j <= k - 1):
+    for j in range(p, k):
+
         if array[j] < x:
+
+            counter_comparisons += 1
+
             i += 1
             aux = array[i]
             array[i] = array[j]
             array[j] = aux
+
+            counter_moviments += 4
+
         elif array[j] == x:
+
+            counter_comparisons += 2
+
             k -= 1
             aux = array[k]
             array[k] = array[j]
             array[j] = aux
             j -= 1
-        j += 1
+
+            counter_moviments += 5
+    
+    counter_moviments += 1
     q = i + 1
+
     for j in range(k, r + 1):
         i += 1
         aux = array[i]
         array[i] = array[j]
         array[j] = aux
+
+        counter_moviments += 4
+    
+    counter_moviments += 1
     t = i
     
-    return array, q, t
+    return array, q, t, counter_comparisons, counter_moviments
