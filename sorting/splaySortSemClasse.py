@@ -24,14 +24,14 @@ def splay(raiz, chave, counter_comparisons, counter_moviments):
 
     counter_comparisons += 1
     if raiz is None or raiz[0] == chave:
-        return raiz
+        return raiz, counter_comparisons, counter_moviments
 
     counter_comparisons += 1
     if raiz[0] > chave:
 
         counter_comparisons += 1
         if raiz[1] is None:
-            return raiz
+            return raiz, counter_comparisons, counter_moviments
         
         if raiz[1][0] > chave:
             counter_comparisons += 1
@@ -44,7 +44,7 @@ def splay(raiz, chave, counter_comparisons, counter_moviments):
 
             counter_moviments += 1
             raiz, counter_comparisons, counter_moviments = rotacionar_dir(raiz, counter_comparisons, counter_moviments)
-            
+
         elif raiz[1][0] < chave:
             counter_comparisons += 1
 
@@ -72,7 +72,7 @@ def splay(raiz, chave, counter_comparisons, counter_moviments):
     else:
         counter_comparisons += 1
         if raiz[2] is None:
-            return raiz
+            return raiz, counter_comparisons, counter_moviments
 
         if raiz[2][0] > chave:
             counter_comparisons += 1
@@ -114,14 +114,14 @@ def splay(raiz, chave, counter_comparisons, counter_moviments):
 def insere(raiz, chave, counter_comparisons, counter_moviments):
     counter_comparisons += 1
     if raiz is None:
-        return criar_no(chave)
+        return criar_no(chave), counter_comparisons, counter_moviments
 
     counter_moviments += 1
     raiz, counter_comparisons, counter_moviments = splay(raiz, chave, counter_comparisons, counter_moviments)
 
     counter_comparisons += 1
     if raiz[0] == chave:
-        return raiz
+        return raiz, counter_comparisons, counter_moviments
 
     novo_no = criar_no(chave)
 
@@ -146,22 +146,22 @@ def deleta(raiz, chave, counter_comparisons, counter_moviments):
 
     counter_comparisons += 1
     if raiz is None:
-        return None
+        return None, counter_comparisons, counter_moviments
 
     counter_moviments += 2
-    raiz, chave, counter_comparisons, counter_moviments = splay(raiz, chave, chave, counter_comparisons, counter_moviments)
+    raiz, counter_comparisons, counter_moviments = splay(raiz, chave, counter_comparisons, counter_moviments)
 
     counter_comparisons += 1
     if raiz is None or chave != raiz[0]:
-        return raiz
+        return raiz, counter_comparisons, counter_moviments
     
     counter_comparisons += 1
     if raiz[1] is None:
-        return raiz[2]
+        return raiz[2], counter_comparisons, counter_moviments
     else:
         counter_moviments += 4
         temp = raiz
-        raiz, chave, counter_comparisons, counter_moviments = splay(raiz[1], chave, chave, counter_comparisons, counter_moviments)
+        raiz, counter_comparisons, counter_moviments = splay(raiz[1], chave, counter_comparisons, counter_moviments)
         raiz[2] = temp[2]
 
     return raiz, counter_comparisons, counter_moviments
@@ -171,7 +171,7 @@ def minimo(raiz, counter_comparisons, counter_moviments):
 
     counter_comparisons += 1
     if raiz is None:
-        return None
+        return None, counter_comparisons, counter_moviments
 
     counter_moviments += 1
     no = raiz
@@ -190,7 +190,7 @@ def extrai_minimo(raiz, counter_comparisons, counter_moviments):
 
     counter_comparisons += 1
     if raiz is None:
-        return None, None
+        return None, None, counter_comparisons, counter_moviments
 
     counter_moviments += 1
     min_chave, counter_comparisons, counter_moviments = minimo(raiz, counter_comparisons, counter_moviments)
@@ -222,6 +222,8 @@ def splaySort(A):
     return B, counter_comparisons, counter_moviments
 
 # Exemplo de uso:
-A = [5, 2, 8, 1, 3]
-B = splaySort(A)
-print(B)  # Esperado: [1, 2, 3, 5, 8]
+# A = [5, 2, 8, 1, 3]
+# B, counter_comparisons, counter_moviments = splaySort(A)
+# print(B)  # Esperado: [1, 2, 3, 5, 8]
+# print(counter_comparisons)
+# print(counter_moviments)
